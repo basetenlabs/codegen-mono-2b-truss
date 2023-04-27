@@ -1,8 +1,11 @@
 import logging
+from pathlib import Path
 import traceback
 from typing import Dict, List
 
 import torch
+from transformers import AutoModelForCausalLM
+from transformers import CodeGenTokenizer
 from transformers import pipeline
 
 
@@ -24,8 +27,9 @@ class Model:
     def load(self):
         # Load model here and assign to self._model.
         self._model = pipeline(
-            tokenizer="Salesforce/codegen-2B-mono",
-            model="Salesforce/codegen-2B-mono",
+            "text-generation",
+            tokenizer=CodeGenTokenizer.from_pretrained(Path(self._data_dir) / "tokenizer"),
+            model=AutoModelForCausalLM.from_pretrained(Path(self._data_dir) / "saved_model"),
             device_map="auto",
         )
 
@@ -68,7 +72,6 @@ class Model:
                 encoded_prompt = self._model.tokenizer(prompt, return_tensors="pt").input_ids
                 encoded_output = self._model.model.generate(
                     encoded_prompt,
-                    temp=temp,
                     max_length=max_length,
                     top_p=top_p,
                 )[0]
