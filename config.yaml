@@ -22,3 +22,8 @@ resources:
   use_gpu: true
 secrets: {}
 system_packages: []
+external_data:
+  - url: https://baseten-public.s3.us-west-2.amazonaws.com/models/codegen-mono-2b/saved_model/pytorch_model-00001-of-00002.bin
+    local_data_path: saved_model/pytorch_model-00001-of-00002.bin
+  - url: https://baseten-public.s3.us-west-2.amazonaws.com/models/codegen-mono-2b/saved_model/pytorch_model-00002-of-00002.bin
+    local_data_path: saved_model/pytorch_model-00002-of-00002.bin
