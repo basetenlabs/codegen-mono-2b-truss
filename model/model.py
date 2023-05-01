@@ -54,21 +54,13 @@ class Model:
 
     def predict(self, request: Dict) -> Dict[str, List]:
         response = {}
-        instances = request["inputs"]
         with torch.no_grad():
             model_output = []
-            for instance in instances:
-                try:
-                    prompt = instance["context"]
-                except (KeyError, AttributeError):
-                    logging.error(traceback.format_exc())
-                    response["error"] = {
-                        "traceback": f'Expected request as an object with text in "prompt"\n{traceback.format_exc()}'
-                    }
-                    return response
-                temp = instance.get("temperature", DEFAULT_TEMPERATURE)
-                max_length = instance.get("max_length", DEFAULT_MAX_LENGTH)
-                top_p = instance.get("top_p", DEFAULT_TOP_P)
+            try:
+                prompt = request["prompt"]
+                temp = request.get("temperature", DEFAULT_TEMPERATURE)
+                max_length = request.get("max_length", DEFAULT_MAX_LENGTH)
+                top_p = request.get("top_p", DEFAULT_TOP_P)
                 encoded_prompt = self._model.tokenizer(prompt, return_tensors="pt").input_ids
                 encoded_output = self._model.model.generate(
                     encoded_prompt,
@@ -78,12 +70,13 @@ class Model:
                 decoded_output = self._model.tokenizer.decode(
                     encoded_output, skip_special_tokens=True
                 )
-                trunacted_output = self.truncate(decoded_output, prompt)
+                truncated_output = self.truncate(decoded_output, prompt)
                 instance_response = {
                     "completion": decoded_output,
                     "context": prompt,
-                    "truncation": trunacted_output,
+                    "truncation": truncated_output,
                 }
-                model_output.append(instance_response)
-        response["predictions"] = model_output
-        return response
+
+                return {"status": "success", "data": instance_response, "message": None}
+            except Exception as exc:
+                return {"status": "error", "data": None, "message": str(exc)}
