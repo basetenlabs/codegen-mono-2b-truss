@@ -47,15 +47,13 @@ class Model:
         """
         return request
 
-    def truncate(self, model_output: str, context: str):
-        if context == model_output[: len(context)]:
-            return model_output[len(context) :]
+    def truncate(self, model_output: str, prompt: str):
+        if prompt == model_output[: len(prompt)]:
+            return model_output[len(prompt) :]
         return model_output
 
     def predict(self, request: Dict) -> Dict[str, List]:
-        response = {}
         with torch.no_grad():
-            model_output = []
             try:
                 prompt = request["prompt"]
                 temp = request.get("temperature", DEFAULT_TEMPERATURE)
@@ -73,7 +71,7 @@ class Model:
                 truncated_output = self.truncate(decoded_output, prompt)
                 instance_response = {
                     "completion": decoded_output,
-                    "context": prompt,
+                    "prompt": prompt,
                     "truncation": truncated_output,
                 }
 
