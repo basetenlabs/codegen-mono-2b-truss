@@ -1,13 +1,16 @@
 bundled_packages_dir: packages
 data_dir: data
-description: null
+description: Generate Python code from natural language or code prompts
 environment_variables: {}
 examples_filename: examples.yaml
 input_type: Any
 model_class_filename: model.py
 model_class_name: Model
 model_framework: custom
-model_metadata: {}
+model_metadata:
+  pretty_name: CodeGen mono 2B
+  tags:
+  - text-generation
 model_module_dir: model
 model_name: CodeGen mono 2B
 model_type: custom
