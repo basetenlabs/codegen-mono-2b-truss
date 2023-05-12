@@ -1,6 +1,6 @@
 bundled_packages_dir: packages
 data_dir: data
-description: Generate Python code from natural language or code prompts
+description: Generate Python code from natural language or code prompts.
 environment_variables: {}
 examples_filename: examples.yaml
 input_type: Any
